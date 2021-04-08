@@ -1,0 +1,169 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script>
+    $(document).ready(function () {
+        var count = 1;
+        var id1;
+        //$("#btn3").click(function () {
+        //    var divn = $("#txt2").val();
+        //    var pos = $("#txt3").val();
+        //    $.getJSON('api/reportdata/GetReportById?id=' + id1 + '&div=' + divn + '&pos=' + pos, function (responseDATA) {
+        //        var item = "<h6>" + responseDATA + "</h6>";
+        //        if (responseDATA == 0)
+        //        {
+        //            alert("No devision on position " + pos);
+        //        }
+        //        else
+        //        {
+        //            $('#table > tbody').append('<tr style="text-align: center;"><td> CASE ' + count + ' </td><td>' + divn + '</td><td>' + pos + '</td>' + '<td>' + item + '</td></tr>');
+        //        count++;
+        //        }
+        //    });
+        //});
+        $("#btn2").click(function () {
+            $("#ShowData").empty();
+            $("#table tbody").empty();
+        });
+
+        //$("#btn4").click(function () {
+        //      $("#ShowRecord").empty();
+        //    $("#table tbody").empty();
+        //    count = 1;
+        //});
+
+        $("#btnSumClear").click(function () {
+              $("#ShowSum").empty();
+        });
+
+        $("#btn1").click(function () {
+            var Term = $("#txt1").val();
+            var divn = $("#txt2").val();
+            var pos = $("#txt3").val();
+            if (Term <= 3) {
+                alert("Enter term after 3");
+            }
+            else if (Term > 37) {
+                alert("Series can't generated,term must be less than 37");
+            }
+            else {
+                $.getJSON('api/series/getseries?term=' + Term + '&division=' + divn + '&position=' + pos, function (responseDATA) {
+                    // alert(responseDATA);
+                    var output = responseDATA.pop();
+                    if (output == 0) {
+                        alert("No devision on position " + pos);
+                    }
+                    else {
+                        $('#table > tbody').append('<tr style="text-align: center;"><td> CASE ' + count + ' </td><td>' + divn + '</td><td>' + pos + '</td>' + '<td>' + output + '</td></tr>');
+                        //count++;
+                    }
+                    // alert(output);
+                    $.each(responseDATA, function (key, val) {
+                        var item = "<span>" + val + " ," + "</span>";
+                        $(item).appendTo("#ShowData");
+                    });
+                });
+                id1 = id;
+            }
+
+        });
+        $("#btnSum").click(function () {
+            var iteration = $("#txtSum").val();
+            var item = "";
+             $("#ShowSum").empty();
+            if (iteration < 10 && iteration > 0)
+            { 
+                    $("#ShowSum").empty();
+                    $.getJSON('api/series/getsum?iteration=' + iteration, function (responseDATA)
+                    {
+                        console.log(responseDATA);
+                        //if (responseDATA == 0)
+                        //{
+                        //    item = "<span style=color:blue;>Exception : sum of last 2 element is equal to first element</span>";
+                        //}
+                        //else
+                        //{
+                            item = "<span>" + responseDATA + "  ," + "</span>";
+                        //}
+                         $(item).appendTo("#ShowSum");
+
+                       });
+                }
+                else  
+                {
+
+                        var item = "<span style=color:red;> Iteration must be 1 to 9 </span>";
+                        $(item).appendTo("#ShowSum");
+                }
+        });
+    });
+</script>
+
+<style>
+    table, td, th {
+        border: 1px solid black;
+    }
+
+    th {
+        text-align: center;
+        padding: 5px;
+        color: #707B7C;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    td {
+        text-align: center;
+    }
+</style>
+
+<div class="jumbotron">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                @* <input type="number" id="txt1" placeholder="Terms" class="form-control" required>
+            <br>
+            <input type="button" value="Series" id="btn1" class="btn btn-success" />
+            <input type="button" value="Clear" id="btn2" class="btn btn-danger" />
+            <br /><br />
+            <div id="ShowData">
+
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <input type="number" id="txt2" placeholder="Divisor" class="form-control" required>
+            <input type="number" id="txt3" placeholder="Number" class="form-control" required>
+            <br>
+            @*
+            <br /><br />
+            <table id="table" border="1" style="width:100%;">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Divisior</th>
+                        <th>Number</th>
+                        <th>Output</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+
+            <div id="ShowRecord">
+            </div>
+        </div> *@
+                <div class="col-sm-6">
+                    <input type="number" id="txtSum" placeholder="Iteration" class="form-control" required><br />
+                    <input type="button" value="Sum" id="btnSum" class="btn btn-primary" />
+                    @*<input type="button" value="Clear" id="btnSumClear" class="btn btn-danger" />*@
+                    <br/><br/>
+                    <div id="ShowSum"></div>
+                </div>
+            </div>
+    </div>
+</div>
